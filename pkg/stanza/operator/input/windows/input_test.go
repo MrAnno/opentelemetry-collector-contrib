@@ -400,14 +400,14 @@ func TestInputRead_Batching(t *testing.T) {
 	originalEvtRender := evtRender
 	originalEvtClose := evtClose
 	originalEvtSubscribe := evtSubscribe
-	originalEvtCreateBookmark := evtCreateBookmark
+	originalCreateBookmarkProc := createBookmarkProc
 	originalEvtUpdateBookmark := evtUpdateBookmark
 	defer func() {
 		evtNext = originalEvtNext
 		evtRender = originalEvtRender
 		evtClose = originalEvtClose
 		evtSubscribe = originalEvtSubscribe
-		evtCreateBookmark = originalEvtCreateBookmark
+		createBookmarkProc = originalCreateBookmarkProc
 		evtUpdateBookmark = originalEvtUpdateBookmark
 	}()
 
@@ -424,8 +424,10 @@ func TestInputRead_Batching(t *testing.T) {
 		return nil
 	}
 
-	evtCreateBookmark = func(_ *uint16) (uintptr, error) {
-		return 1, nil
+	createBookmarkProc = MockProc{
+		call: func(_ ...uintptr) (uintptr, uintptr, error) {
+			return 1, 0, nil
+		},
 	}
 
 	evtUpdateBookmark = func(_, _ uintptr) error {
