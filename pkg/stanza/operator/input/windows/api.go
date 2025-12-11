@@ -86,8 +86,6 @@ const (
 	EvtRenderContextSystem uint32 = 1
 )
 
-var evtSubscribeFunc = evtSubscribe
-
 // evtSubscribe is the direct syscall implementation of EvtSubscribe (https://docs.microsoft.com/en-us/windows/win32/api/winevt/nf-winevt-evtsubscribe)
 var evtSubscribe = func(session uintptr, signalEvent windows.Handle, channelPath, query *uint16, bookmark, context, callback uintptr, flags uint32) (uintptr, error) {
 	handle, _, err := subscribeProc.Call(session, uintptr(signalEvent), uintptr(unsafe.Pointer(channelPath)), uintptr(unsafe.Pointer(query)), bookmark, context, callback, uintptr(flags))
